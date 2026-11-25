@@ -14,7 +14,9 @@ import {
   onSnapshot,
   serverTimestamp,
   doc,
-  getDoc
+  getDoc,
+  query,
+  where
 } from "firebase/firestore";
 
 const SESSION_KEY = "fmsCurrentUser";
@@ -31,8 +33,10 @@ export default function App() {
   const [page, setPage] = useState("login");
   const [message, setMessage] = useState("");
   const [feedbacks, setFeedbacks] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [bookings, setBookings] = useState([]);
 
-  // Get feedback only for verified admin sessions
+  // Admin feedback listener
   useEffect(() => {
     if (!user || user.role !== "admin") {
       setFeedbacks([]);
@@ -49,12 +53,60 @@ export default function App() {
 
         setFeedbacks(allFeedbacks);
       },
-      (error) => {
-        console.error("Firebase error:", error);
-      }
+      (error) => console.error("Feedback error:", error)
     );
 
     return () => unsubscribe();
+  }, [user]);
+
+  // User orders and bookings listener
+  useEffect(() => {
+    if (!user || user.role !== "user") {
+      setOrders([]);
+      setBookings([]);
+      return;
+    }
+
+    const orderQuery = query(
+      collection(db, "orders"),
+      where("userEmail", "==", user.email)
+    );
+
+    const bookingQuery = query(
+      collection(db, "bookings"),
+      where("userEmail", "==", user.email)
+    );
+
+    const unsubscribeOrders = onSnapshot(
+      orderQuery,
+      (snapshot) => {
+        setOrders(
+          snapshot.docs.map((item) => ({
+            id: item.id,
+            ...item.data()
+          }))
+        );
+      },
+      (error) => console.error("Orders error:", error)
+    );
+
+    const unsubscribeBookings = onSnapshot(
+      bookingQuery,
+      (snapshot) => {
+        setBookings(
+          snapshot.docs.map((item) => ({
+            id: item.id,
+            ...item.data()
+          }))
+        );
+      },
+      (error) => console.error("Bookings error:", error)
+    );
+
+    return () => {
+      unsubscribeOrders();
+      unsubscribeBookings();
+    };
   }, [user]);
 
   function saveLogin(account) {
@@ -75,7 +127,7 @@ export default function App() {
     });
   }
 
-  // Verify admin using Firestore UID document
+  // Admin verification
   async function adminLogin(firebaseUser) {
     try {
       const adminRef = doc(db, "admins", firebaseUser.uid);
@@ -98,6 +150,7 @@ export default function App() {
     }
   }
 
+  // Logout
   async function logout() {
     try {
       await signOut(auth);
@@ -108,27 +161,70 @@ export default function App() {
     localStorage.removeItem(SESSION_KEY);
     setUser(null);
     setFeedbacks([]);
+    setOrders([]);
+    setBookings([]);
     setPage("login");
     setMessage("You have logged out.");
   }
 
-  // Save feedback in Firestore
+  // Save feedback
   async function addFeedback(feedback) {
     try {
       await addDoc(collection(db, "feedbacks"), {
         ...feedback,
+        userEmail: user.email,
         status: "New",
         createdAt: serverTimestamp()
       });
 
-      console.log("Feedback saved successfully!");
       return true;
     } catch (error) {
-      console.error("Error saving feedback:", error);
+      console.error("Feedback error:", error);
       return false;
     }
   }
 
+  // Place product order
+  async function placeOrder(cart, total) {
+    try {
+      await addDoc(collection(db, "orders"), {
+        userEmail: user.email,
+        userName: user.name,
+        items: cart,
+        total: total,
+        status: "Confirmed",
+        createdAt: serverTimestamp()
+      });
+
+      return true;
+    } catch (error) {
+      console.error("Order error:", error);
+      return false;
+    }
+  }
+
+  // Book service
+  async function bookService(service) {
+    try {
+      await addDoc(collection(db, "bookings"), {
+        userEmail: user.email,
+        userName: user.name,
+        serviceId: service.id,
+        name: service.name,
+        price: service.price,
+        bookingDate: service.bookingDate,
+        status: "Booked",
+        createdAt: serverTimestamp()
+      });
+
+      return true;
+    } catch (error) {
+      console.error("Booking error:", error);
+      return false;
+    }
+  }
+
+  // Login and signup pages
   if (!user) {
     if (page === "signup") {
       return (
@@ -156,6 +252,7 @@ export default function App() {
     );
   }
 
+  // Admin dashboard
   if (user.role === "admin") {
     return (
       <AdminDashboard
@@ -166,11 +263,16 @@ export default function App() {
     );
   }
 
+  // User dashboard
   return (
     <UserDashboard
       user={user}
       onLogout={logout}
       onSubmitFeedback={addFeedback}
+      onPlaceOrder={placeOrder}
+      onBookService={bookService}
+      orders={orders}
+      bookings={bookings}
     />
   );
 }

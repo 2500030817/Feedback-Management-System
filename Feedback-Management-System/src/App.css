@@ -47,3 +47,248 @@ tbody tr:nth-child(even){background:#f7f7f7}
 .logout:hover{background:#a51f1f}
 @media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.filters{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.header h1{font-size:20px}.logout{position:static;margin-top:12px}.feedback-form,.cards,.filters,.analysis-grid{grid-template-columns:1fr}.container{width:92%}.panel,.auth-card{padding:18px}}
+
+/* SHOP PAGE DESIGN */
+
+.shop-container {
+  padding: 25px;
+  color: #20243a;
+}
+
+.shop-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 40px;
+  border-radius: 20px;
+  background: linear-gradient(120deg, #182848, #4b6cb7);
+  color: white;
+  margin-bottom: 35px;
+  overflow: hidden;
+}
+
+.shop-hero h1 {
+  font-size: 34px;
+  margin: 12px 0;
+}
+
+.shop-hero p {
+  max-width: 550px;
+  line-height: 1.7;
+  color: #e4eaff;
+}
+
+.shop-tag {
+  font-size: 12px;
+  letter-spacing: 2px;
+  font-weight: bold;
+  color: #c8d7ff;
+}
+
+.shop-hero-icon {
+  font-size: 85px;
+  padding: 15px;
+}
+
+.shop-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.shop-heading h2 {
+  margin-bottom: 5px;
+}
+
+.shop-heading p {
+  color: #777;
+  margin-top: 5px;
+}
+
+.shop-count {
+  background: #e9efff;
+  color: #3155a5;
+  padding: 10px 16px;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+.shop-toolbar {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 18px;
+}
+
+.shop-toolbar input,
+.shop-toolbar select {
+  padding: 13px 16px;
+  border: 1px solid #dce1eb;
+  border-radius: 10px;
+  background: white;
+  font-size: 14px;
+}
+
+.shop-toolbar input {
+  flex: 1;
+  min-width: 0;
+}
+
+.shop-toolbar select {
+  min-width: 180px;
+}
+
+.shop-category-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.shop-category {
+  padding: 10px 17px;
+  border: 1px solid #dce1eb;
+  background: white;
+  border-radius: 25px;
+  cursor: pointer;
+  color: #454b5c;
+  transition: 0.2s;
+}
+
+.shop-category:hover,
+.shop-category.active {
+  background: #3155a5;
+  color: white;
+  border-color: #3155a5;
+}
+
+.shop-product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 22px;
+}
+
+.shop-product-card {
+  background: white;
+  border: 1px solid #e8eaf0;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.shop-product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 28px rgba(30, 50, 90, 0.12);
+}
+
+.shop-image-box {
+  height: 190px;
+  background: #f5f7fb;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+}
+
+.shop-image-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.shop-product-category {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: white;
+  color: #3155a5;
+  padding: 6px 10px;
+  border-radius: 15px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.shop-product-info {
+  padding: 17px;
+}
+
+.shop-product-info h3 {
+  font-size: 16px;
+  margin: 0 0 9px;
+}
+
+.shop-product-info p {
+  font-size: 13px;
+  color: #777;
+  line-height: 1.5;
+  min-height: 40px;
+}
+
+.shop-product-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.shop-product-bottom strong {
+  color: #253f80;
+  font-size: 18px;
+}
+
+.shop-product-bottom button {
+  background: #3155a5;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.shop-product-bottom button:hover {
+  background: #203d82;
+}
+
+.shop-empty {
+  text-align: center;
+  padding: 50px 15px;
+  color: #777;
+}
+
+.shop-empty span {
+  font-size: 40px;
+}
+
+@media (max-width: 600px) {
+  .shop-container {
+    padding: 12px;
+  }
+
+  .shop-hero {
+    padding: 25px;
+  }
+
+  .shop-hero h1 {
+    font-size: 24px;
+  }
+
+  .shop-hero-icon {
+    font-size: 45px;
+  }
+
+  .shop-toolbar {
+    flex-direction: column;
+  }
+
+  .shop-toolbar select {
+    width: 100%;
+  }
+
+  .shop-heading {
+    align-items: flex-start;
+    gap: 10px;
+  }
+}
